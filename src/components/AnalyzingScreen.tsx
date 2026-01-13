@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { Brain, Shield, CheckCircle } from "lucide-react";
 
-interface AnalyzingScreenProps {
-  onAnalysisComplete: () => void;
-}
-
-const AnalyzingScreen = ({ onAnalysisComplete }: AnalyzingScreenProps) => {
+const AnalyzingScreen = () => {
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   
@@ -31,14 +27,17 @@ const AnalyzingScreen = ({ onAnalysisComplete }: AnalyzingScreenProps) => {
     const stepTimers = [
       setTimeout(() => setCurrentStep(1), 1200),
       setTimeout(() => setCurrentStep(2), 2400),
-      setTimeout(() => onAnalysisComplete(), 3500),
+      setTimeout(() => {
+        // Hard redirect to unlock page for CPAGrip compatibility
+        window.location.href = "/unlock.html";
+      }, 3500),
     ];
     
     return () => {
       clearInterval(progressInterval);
       stepTimers.forEach(timer => clearTimeout(timer));
     };
-  }, [onAnalysisComplete]);
+  }, []);
   
   const CurrentIcon = steps[currentStep].icon;
   
