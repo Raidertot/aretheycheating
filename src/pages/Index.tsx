@@ -1,13 +1,14 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import HeroSection from "@/components/HeroSection";
 import AgitationSection from "@/components/AgitationSection";
 import CredibilitySection from "@/components/CredibilitySection";
 import AssessmentSection from "@/components/AssessmentSection";
+import AnalyzingScreen from "@/components/AnalyzingScreen";
+import ContentLockerGate from "@/components/ContentLockerGate";
 import ResultsSection from "@/components/ResultsSection";
-import ContentLockSection from "@/components/ContentLockSection";
 import Footer from "@/components/Footer";
 
-type PageState = "landing" | "assessment" | "results";
+type PageState = "landing" | "assessment" | "analyzing" | "locker" | "results";
 
 const Index = () => {
   const [pageState, setPageState] = useState<PageState>("landing");
@@ -23,9 +24,25 @@ const Index = () => {
   
   const handleAssessmentComplete = (completedAnswers: Record<number, number>) => {
     setAnswers(completedAnswers);
-    setPageState("results");
+    setPageState("analyzing");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+  
+  const handleAnalysisComplete = useCallback(() => {
+    // Check if user already completed locker this session
+    const lockerCompleted = sessionStorage.getItem("contentLockerCompleted");
+    if (lockerCompleted === "true") {
+      setPageState("results");
+    } else {
+      setPageState("locker");
+    }
+  }, []);
+  
+  const handleLockerComplete = useCallback(() => {
+    sessionStorage.setItem("contentLockerCompleted", "true");
+    setPageState("results");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
   
   return (
     <main className="min-h-screen bg-background">
@@ -45,11 +62,16 @@ const Index = () => {
         </div>
       )}
       
+      {pageState === "analyzing" && (
+        <AnalyzingScreen onAnalysisComplete={handleAnalysisComplete} />
+      )}
+      
+      {pageState === "locker" && (
+        <ContentLockerGate onComplete={handleLockerComplete} />
+      )}
+      
       {pageState === "results" && (
-        <>
-          <ResultsSection answers={answers} />
-          <ContentLockSection />
-        </>
+        <ResultsSection answers={answers} />
       )}
       
       <Footer />
