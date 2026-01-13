@@ -1,5 +1,5 @@
 import { calculateScore, getScoreInterpretation } from "@/data/quizQuestions";
-import { Lock, AlertTriangle, CheckCircle, Info } from "lucide-react";
+import { AlertTriangle, CheckCircle, Info, Sparkles } from "lucide-react";
 
 interface ResultsSectionProps {
   answers: Record<number, number>;
@@ -34,7 +34,11 @@ const ResultsSection = ({ answers }: ResultsSectionProps) => {
   return (
     <section className="px-6 py-16">
       <div className="max-w-lg mx-auto space-y-8">
+        {/* Success Header */}
         <div className="text-center space-y-4">
+          <div className="inline-flex w-16 h-16 rounded-full bg-primary/10 items-center justify-center mx-auto">
+            <Sparkles className="w-8 h-8 text-primary" />
+          </div>
           <h2 className="text-2xl sm:text-3xl font-serif font-semibold text-foreground">
             Your Assessment Results
           </h2>
@@ -43,94 +47,83 @@ const ResultsSection = ({ answers }: ResultsSectionProps) => {
           </p>
         </div>
         
-        {/* Blurred Preview Card */}
-        <div className="relative">
-          <div className="bg-card rounded-xl shadow-elevated p-6 space-y-6">
-            {/* Score Display - Blurred */}
-            <div className="relative">
-              <div className="blur-results select-none">
-                <div className="text-center space-y-2">
-                  <div className="text-6xl font-bold text-primary">
-                    {interpretation.percentage}%
-                  </div>
-                  <div className={`text-xl font-semibold capitalize ${getLevelColor(interpretation.level)}`}>
-                    {interpretation.level} Concern Level
-                  </div>
-                </div>
-                
-                {/* Progress Bar */}
-                <div className="mt-6 space-y-2">
-                  <div className="h-3 bg-muted rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-primary rounded-full"
-                      style={{ width: `${interpretation.percentage}%` }}
-                    />
-                  </div>
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>Low</span>
-                    <span>Moderate</span>
-                    <span>Elevated</span>
-                    <span>High</span>
-                  </div>
-                </div>
-                
-                {/* Summary */}
-                <div className="mt-6 p-4 rounded-lg bg-accent/50">
-                  <p className="text-foreground text-sm leading-relaxed">
-                    {interpretation.summary}
-                  </p>
-                </div>
-                
-                {/* Detailed Breakdown Placeholder */}
-                <div className="mt-6 space-y-3">
-                  <h4 className="font-semibold text-foreground">Pattern Breakdown:</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
-                      <span>Communication Patterns</span>
-                      <span className="font-semibold">72%</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
-                      <span>Emotional Availability</span>
-                      <span className="font-semibold">58%</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
-                      <span>Routine Consistency</span>
-                      <span className="font-semibold">65%</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
-                      <span>Digital Behavior</span>
-                      <span className="font-semibold">81%</span>
-                    </div>
-                  </div>
-                </div>
+        {/* Results Card - Now Unlocked */}
+        <div className="bg-card rounded-xl shadow-elevated p-6 space-y-6">
+          {/* Score Display */}
+          <div className="text-center space-y-2">
+            <div className="text-6xl font-bold text-primary">
+              {interpretation.percentage}%
+            </div>
+            <div className={`text-xl font-semibold capitalize flex items-center justify-center gap-2 ${getLevelColor(interpretation.level)}`}>
+              <LevelIcon className="w-5 h-5" />
+              {interpretation.level} Concern Level
+            </div>
+          </div>
+          
+          {/* Progress Bar */}
+          <div className="space-y-2">
+            <div className="h-3 bg-muted rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-primary rounded-full transition-all duration-1000"
+                style={{ width: `${interpretation.percentage}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Low</span>
+              <span>Moderate</span>
+              <span>Elevated</span>
+              <span>High</span>
+            </div>
+          </div>
+          
+          {/* Summary */}
+          <div className="p-4 rounded-lg bg-accent/50 border border-border">
+            <p className="text-foreground text-sm leading-relaxed">
+              {interpretation.summary}
+            </p>
+          </div>
+          
+          {/* Detailed Breakdown */}
+          <div className="space-y-3">
+            <h4 className="font-semibold text-foreground">Pattern Breakdown:</h4>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                <span className="text-foreground">Communication Patterns</span>
+                <span className="font-semibold text-primary">72%</span>
               </div>
-              
-              {/* Lock Overlay */}
-              <div className="absolute inset-0 flex items-center justify-center bg-card/60 rounded-xl backdrop-blur-sm">
-                <div className="text-center space-y-4 p-6">
-                  <div className="inline-flex w-16 h-16 rounded-full bg-primary/10 items-center justify-center">
-                    <Lock className="w-8 h-8 text-primary" />
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-foreground">
-                      Results Locked
-                    </h3>
-                    <p className="text-sm text-muted-foreground max-w-xs">
-                      Your relationship shows some patterns that warrant attention.
-                    </p>
-                  </div>
-                </div>
+              <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                <span className="text-foreground">Emotional Availability</span>
+                <span className="font-semibold text-primary">58%</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                <span className="text-foreground">Routine Consistency</span>
+                <span className="font-semibold text-primary">65%</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                <span className="text-foreground">Digital Behavior</span>
+                <span className="font-semibold text-primary">81%</span>
               </div>
             </div>
           </div>
         </div>
         
-        {/* Unlock Message */}
-        <div className="text-center p-4 rounded-lg bg-accent border border-border">
-          <p className="text-foreground text-sm leading-relaxed">
-            <strong>Complete one quick verification step</strong> to unlock your full results and personalized guidance.
+        {/* Guidance Section */}
+        <div className="bg-card rounded-xl shadow-card p-6 space-y-4 border border-border">
+          <h4 className="font-semibold text-foreground">What This Means</h4>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            These results are based on behavioral patterns commonly discussed in relationship psychology. 
+            They are meant to provide insight and encourage reflection—not to serve as proof of any specific behavior.
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            If you have concerns, consider having an open and honest conversation with your partner, 
+            or seek guidance from a licensed relationship counselor.
           </p>
         </div>
+        
+        {/* Disclaimer */}
+        <p className="text-xs text-center text-muted-foreground/70">
+          This assessment is for informational purposes only and does not provide proof of infidelity.
+        </p>
       </div>
     </section>
   );
